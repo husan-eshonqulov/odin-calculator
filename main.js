@@ -3,7 +3,9 @@ const lastScreen = document.querySelector('#lastOperationScreen');
 const digitBtns = document.querySelectorAll('.digit');
 const clearBtn = document.querySelector('#clearBtn');
 const deleteBtn = document.querySelector('#deleteBtn');
+const equalBtn = document.querySelector('#equalsBtn');
 const opBtns = document.querySelectorAll('.operation');
+let isPressedEqual = false;
 let isPressedOp = false;
 const ops = '+*-/';
 let op = '';
@@ -13,8 +15,9 @@ let res = '';
 
 digitBtns.forEach(digBtn => digBtn.addEventListener('click', () => handleDigit(digBtn)));
 opBtns.forEach(opBtn => opBtn.addEventListener('click', () => handleOperation(opBtn)));
-clearBtn.addEventListener('click', () => handleClick());
+clearBtn.addEventListener('click', () => handleClear());
 deleteBtn.addEventListener('click', () => handleDelete());
+equalBtn.addEventListener('click', () => handleEqual());
 
 function handleDigit(digBtn) {
     if (isPressedOp) {
@@ -26,9 +29,10 @@ function handleDigit(digBtn) {
     currScreen.textContent = num !== '0' ? num + digit : digit;
 }
 
-function handleClick() {
+function handleClear() {
     currScreen.textContent = 0;
     lastScreen.textContent = '';
+    isPressedEqual = false;
     isPressedOp = false;
     num1 = '';
     num2 = '';
@@ -52,14 +56,31 @@ function handleOperation(opBtn) {
             lastScreen.textContent = num1 + ' ' + op;
         }
         else {
-            num2 = currScreen.textContent;
-            res = operate(op, Number(num1), Number(num2));
-            op = opBtn.textContent;
-            lastScreen.textContent = res + ' ' + op;
-            num1 = res;
+            if (isPressedEqual) {
+                op = opBtn.textContent;
+                lastScreen.textContent = num1 + ' ' + op;
+                isPressedEqual = false;
+            }
+            else {
+                num2 = currScreen.textContent;
+                res = operate(op, Number(num1), Number(num2));
+                op = opBtn.textContent;
+                lastScreen.textContent = res + ' ' + op;
+                num1 = res;
+            }
         }
     }
     isPressedOp = true;
+}
+
+function handleEqual() {
+    if (isPressedEqual) return;
+    num2 = currScreen.textContent;
+    lastScreen.textContent = num1 + ' ' + op + ' ' + num2 + ' ' + '=';
+    res = operate(op, Number(num1), Number(num2));
+    currScreen.textContent = res;
+    num1 = res;
+    isPressedEqual = true;
 }
 
 function operate(op, a, b) {
