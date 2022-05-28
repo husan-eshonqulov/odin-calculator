@@ -5,6 +5,7 @@ const clearBtn = document.querySelector('#clearBtn');
 const deleteBtn = document.querySelector('#deleteBtn');
 const equalBtn = document.querySelector('#equalsBtn');
 const opBtns = document.querySelectorAll('.operation');
+const pointBtn = document.querySelector('#pointBtn');
 let isPressedEqual = false;
 let isPressedOp = false;
 const ops = '+*-/';
@@ -18,6 +19,7 @@ opBtns.forEach(opBtn => opBtn.addEventListener('click', () => handleOperation(op
 clearBtn.addEventListener('click', () => handleClear());
 deleteBtn.addEventListener('click', () => handleDelete());
 equalBtn.addEventListener('click', () => handleEqual());
+pointBtn.addEventListener('click', () => handlePoint());
 
 function handleDigit(digBtn) {
     if (isPressedOp) {
@@ -81,6 +83,13 @@ function handleEqual() {
     currScreen.textContent = res;
     num1 = res;
     isPressedEqual = true;
+}
+
+function handlePoint() {
+    if (currScreen.textContent.includes('.')) return;
+    if (currScreen.textContent === '0')
+        currScreen.textContent = '0.';
+    else currScreen.textContent += '.';
 }
 
 function operate(op, a, b) {
